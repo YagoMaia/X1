@@ -1,4 +1,7 @@
 # X1
+
+_É recomendo o uso de algum interpretador, e não do terminal, para uma melhor experiência_
+
 Um jogo criado em Python para ser jogado por 2 pessoas, estilo RPG;
 
 O jogo possui 4 classes: Arqueiro, Paladino, Mago e Assasino
