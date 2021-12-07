@@ -17,4 +17,5 @@ Um especialista na arte de matar, capaz de realizar _Ataques Furtivos_, de infli
 
 #
 Esse jogo teve como intuito o aprendizado de Python, tentando, apenas por linhas de cógidos, trazer uma diversão para quem jogar;
+
 Espero que gostem
