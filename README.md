@@ -16,7 +16,7 @@ Um indivíduo com grandes habilidades com sua Espada e Escudo podendo melhorar s
 Um indivíduo esperto com diversas magias que impõe muitas restições ao adversário, e caso saiba ultiliza-lás será um terrivél inimigo para se enfrentar. É capaz de realizar diversos combos ultilizando suas magias em certas ordens como o _Ataque ELEMENTAL_
 
 # **Assasino** 🗡️
-Um especialista na arte de matar, capaz de realizar _Ataques Furtivos_, de inflingir veneno aos inimigos com sua _Adaga Envenenada_, ou até mesmo lanca-lá e quando estiver desprevenido, preocupando-se com o veneno fiquei esperto com a _Apunhalada_
+Um especialista na arte de matar, capaz de realizar _Ataques Furtivos_, de inflingir veneno aos inimigos com sua _Adaga Envenenada_, ou até mesmo lanca-lá e quando estiver desprevenido, preocupando-se com o veneno fique esperto com a _Apunhalada_
 
 #
 Esse jogo teve como intuito o aprendizado de Python, tentando, apenas por linhas de cógidos, trazer uma diversão para quem jogar;
