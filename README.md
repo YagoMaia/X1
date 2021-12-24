@@ -1,4 +1,4 @@
-<video scr='video/video x1.mp4'>
+<video scr='video/videox1.mp4'><\video>
 
 # X1 ⚔️
 
