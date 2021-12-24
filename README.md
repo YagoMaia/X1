@@ -1,4 +1,4 @@
-<h1>X1<\h1> ⚔️
+# X1 ⚔️
 
 _É recomendo o uso de algum interpretador, e não do terminal, para uma melhor experiência_
 
@@ -6,7 +6,7 @@ Um jogo criado em Python para ser jogado por 2 pessoas, estilo RPG;
 
 O jogo possui 4 classes: Arqueiro, Paladino, Mago e Assasino
 
-<h2>**Arquerio**<\h2> 🏹
+# **Arquerio** 🏹
 Com suas diversas habilades envolvendo arco e flecha é capaz de ferir seu adversário, podendo até envenena-ló com sua _Flecha Envenenada_, ou até mesmo atrapalhar a pontaria do adversário com sua _Bomba de Fumaça_
 
 # **Paladino** 🛡️
