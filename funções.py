@@ -1,3 +1,5 @@
+from classes import *
+
 #Definindo cores
 nada = "\033[m"
 vermelho = '\033[1;31m'
@@ -15,7 +17,7 @@ def mostrar_vida(vida1, vida2, nome1, nome2, situação1, situação2):
         print(f'{nome1}: {verde}{vida1:.0f}{nada} pontos de vida Status:{situação1}')
     elif 250 >= vida1 > 135:
         print(f'{nome1}: {amarelo}{vida1:.0f}{nada} pontos de vida Status:{situação1}')
-    elif 135 >= vida1 > 0:
+    elif 135 >= vida1 > 0:  
         print(f'{nome1}: {vermelho}{vida1:.0f}{nada} pontos de vida Status:{situação1}')
     #Mostrando a vida do jogador 2
     if 550 >= vida2 > 250:
