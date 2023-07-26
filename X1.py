@@ -214,7 +214,7 @@ while True:
                     chance_fogo1 = randint(0, 9)
                     estado1 = 'válido'
                     if fogo[chance_fogo1] == 1:
-                        if status2 != f'{azul}mMolhado{nada}' and status2 != f'{amarelo}Congelado{nada}':
+                        if status2 != f'{azul}Molhado{nada}' and status2 != f'{amarelo}Congelado{nada}':
                             sleep(1)
                             print(f'{vermelho}O inimigo está QUEIMANDO{nada}')
                             sleep(1)
