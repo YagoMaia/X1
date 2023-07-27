@@ -36,12 +36,33 @@ class Player:
                 print(f"Status: {azul}{self.status}{nada}")
             case 'Ira':
                 print(f"Status: {vermelho}{self.status}{nada}")
-    def atualizar_vida(self, dano: int):
+    
+    def atualizar_vida(self, dano : int):
         if self.status == 'Protegido':
             self.vida -= dano/2
         else: 
             self.vida -= dano
         return self.vida
+        
+    def atualizar_vida_status(self, ret : dict):
+        for stat, dano in ret.items():
+            if self.status == 'Protegido':
+                self.vida -= dano/2
+            else: 
+                self.vida -= dano
+            if stat:
+                self.status = stat
+            return {self.status : self.vida}
+
+    def atualizar(self, dict : dict):
+        for stat, dano in dict.items():
+            self.atualizar_vida(dano)
+            self.atualizar_status(stat)
+
+    def atualizar_status(self, new_stat : str | None = None):
+        if(new_stat != None):
+            self.status = new_stat
+        return self.status
 
     def mostrar_vida(self):
         print(f"{self.status_vida()}{self.vida}{nada}")
@@ -82,11 +103,12 @@ class Arqueiro(Player):
             chance_crit = randint(10, 20)
         else:
             chance_crit = randint(0, 20)
-        self.status = 'Normal'
+        if self.status == 'Mirando':
+            self.status = 'Normal'
         if (chance_crit == 20):
             print(f"{vermelho}CRÍTICO{nada}")
-            return dano * 2
-        return dano
+            return {None:dano*2}
+        return {None:dano}
 
     def ataque(self, escolha: int):
         if (escolha > len(self.habilidades_clase)):
@@ -97,10 +119,10 @@ class Arqueiro(Player):
             match key:
                 case 'Poção':
                     self.usar_pocao()
-                    return 0
+                    return {None:0}
                 case 'Mira Certeira':
                     self.status = 'Mirando'
-                    return 0
+                    return {None:0}
                 case other:
                     return self.critico(value)
 
@@ -150,6 +172,15 @@ class Assasino(Player):
             'Apunhalada': 40}, {'Lançamento de Adaga': 10}, {'Poção': 50}]
         self.nome = input("Qual seu nome? ").title()
 
+    def envenenar(self, dano : int):
+        chance_veneno = randint(20,20)
+        new_status = None
+        if(chance_veneno == 20):
+            new_status = 'Envenenado'
+            return {new_status:dano * 2}
+        return {new_status:dano}
+
+
     def ataque(self, escolha: int):
         if (escolha > len(self.habilidades_clase)):
             print("Escolha Indisponível")
@@ -164,7 +195,7 @@ class Assasino(Player):
                     self.status = 'Mirando'
                     return 0
                 case other:
-                    return self.critico(value)
+                    return self.envenenar(value)
 
 
 class Mago(Player):
@@ -208,3 +239,7 @@ Escolha a classe do jogador {jogador}: '''))
             return Assasino()
         case other:
             return None
+
+def Players(p1 : Player, p2 : Player):
+    p1.mostrar_atributos()
+    p2.mostrar_atributos()
