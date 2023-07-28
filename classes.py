@@ -1,15 +1,9 @@
 from random import randint
-
-nada = "\033[m"
-vermelho = '\033[1;31m'
-verde = '\033[1;32m'
-amarelo = '\033[1;33m'
-azul = '\033[1;34m'
-roxo = '\033[1;35m'
-ciano = '\033[1;36m'
-cinza = '\033[1;37m'
+from colors import *
+from math import ceil
 
 
+#Classe Base
 class Player:
     vida = 500
     nome = "Player"
@@ -39,57 +33,47 @@ class Player:
     
     def atualizar_vida(self, dano : int):
         if self.status == 'Protegido':
-            self.vida -= dano/2
+            self.vida -= ceil(dano/2)
+        elif self.status == 'Envenenado':
+            self.vida -= dano
+            self.vida -= ceil((1/100)*self.vida)
         else: 
             self.vida -= dano
         return self.vida
-        
-    def atualizar_vida_status(self, ret : dict):
-        for stat, dano in ret.items():
-            if self.status == 'Protegido':
-                self.vida -= dano/2
-            else: 
-                self.vida -= dano
-            if stat:
-                self.status = stat
-            return {self.status : self.vida}
-
-    def atualizar(self, dict : dict):
-        for stat, dano in dict.items():
-            self.atualizar_vida(dano)
-            self.atualizar_status(stat)
 
     def atualizar_status(self, new_stat : str | None = None):
         if(new_stat != None):
             self.status = new_stat
         return self.status
+    
+    def atualizar(self, dict : dict):
+        for stat, dano in dict.items():
+            self.atualizar_vida(dano)
+            self.atualizar_status(stat)
+
 
     def mostrar_vida(self):
         print(f"{self.status_vida()}{self.vida}{nada}")
 
     def mostrar_atributos(self):
-        #print(f'Vida: {self.status_vida()}{self.vida}{nada}')
-        #print(f'Nome: {self.nome}')
-        #print(f'Classe: {self.classe}')
-        #print(f'Habilidades: {self.habilidades_clase}')
         print('-=' * 20)
         print(f"{self.nome}: {self.status_vida()}{self.vida}{nada} Pontos de Vida")
         self.mostrar_status()
         print('-=' * 20)
-        #self.mostrar_status()
 
     def usar_pocao(self):
-        self.vida += 50
-        return self.vida
+        self.vida += 100
+        self.status = 'Normal'
+        print("Vida Recuperada em 100")
 
     def mostrar_ataque(self):
-        print("="*45)
+        print("="*41)
         print(f"Habilidades disponíveis para {self.nome}:")
         for a in range(0, len(self.habilidades_clase)):
             for k, v in self.habilidades_clase[a].items():
                 print(f"[ {a} ] - {k}")
 
-
+#Classes do PVP
 class Arqueiro(Player):
 
     def __init__(self):
@@ -110,12 +94,21 @@ class Arqueiro(Player):
             return {None:dano*2}
         return {None:dano}
 
-    def ataque(self, escolha: int):
+    def envenenar(self, dano : int):
+        chance_veneno = randint(0,20)
+        new_status = None
+        if(chance_veneno == 20):
+            new_status = 'Envenenado'
+            print("Você conseguiu envenenar seu inimigo")
+        return {new_status:dano}
+
+    def ataque(self, escolha: int, stat_adv : str | None = None):
         if (escolha > len(self.habilidades_clase)):
             print("Escolha Indisponível")
-            return 0
+            return {None:0}
         habilidade_usada = self.habilidades_clase[escolha]
         for key, value in habilidade_usada.items():
+            print(f"Habilidade usada : {key}")
             match key:
                 case 'Poção':
                     self.usar_pocao()
@@ -123,8 +116,16 @@ class Arqueiro(Player):
                 case 'Mira Certeira':
                     self.status = 'Mirando'
                     return {None:0}
+                case 'Flecha Envenenada':
+                    dano_causado = self.envenenar(value)
+                    for d in dano_causado.values():
+                        print(f"Dano Causado: {d}")
+                    return dano_causado
                 case other:
-                    return self.critico(value)
+                    dano_causado = self.critico(value)
+                    for d in dano_causado.values():
+                        print(f"Dano Causado: {d}")
+                    return dano_causado
 
 
 class Paladino(Player):
@@ -140,29 +141,33 @@ class Paladino(Player):
             self.status = 'Normal'
         self.cont_1 += 1
         if self.status == 'Ira':
-            return dano*2
-        return dano
+            return {None:dano*2}
+        return {None:dano}
 
-    def ataque(self, escolha: int):
+    def ataque(self, escolha: int, stat_adv : str | None = None):
         if (escolha > len(self.habilidades_clase)):
             print("Escolha Indisponível")
-            return 0
+            return {None:0}
         habilidade_usada = self.habilidades_clase[escolha]
         for key, value in habilidade_usada.items():
+            print(f"Habilidade usada : {key}")
             match key:
                 case 'Poção':
                     self.usar_pocao()
-                    return 0
+                    return {None:0}
                 case 'Ira':
                     self.status = 'Ira'
                     self.cont_1 = 0
-                    return 0
+                    return {None:0}
                 case 'Escudo Divino':
                     self.status = 'Protegido'
                     self.cont_1 = 0
-                    return 0
+                    return {None:0}
                 case other:
-                    return self.atacar(value)
+                    dano_causado = self.atacar(value)
+                    for d in dano_causado.values():
+                        print(f"Dano Causado: {d}")
+                    return dano_causado
 
 
 class Assasino(Player):
@@ -173,29 +178,41 @@ class Assasino(Player):
         self.nome = input("Qual seu nome? ").title()
 
     def envenenar(self, dano : int):
-        chance_veneno = randint(20,20)
+        chance_veneno = randint(0,20)
         new_status = None
         if(chance_veneno == 20):
             new_status = 'Envenenado'
+            print("Você conseguiu envenenar seu inimigo")
             return {new_status:dano * 2}
         return {new_status:dano}
 
+    def apunhalada(self, dano : int, stat_adv):
+        if(stat_adv == 'Envenenado'):
+            return {None:dano*2}
+        return {None:dano}
 
-    def ataque(self, escolha: int):
+
+    def ataque(self, escolha: int, stat_adv : str | None = None):
         if (escolha > len(self.habilidades_clase)):
             print("Escolha Indisponível")
-            return 0
+            return {None:0}
         habilidade_usada = self.habilidades_clase[escolha]
         for key, value in habilidade_usada.items():
+            print(f"Habilidade Usada: {key}")
             match key:
                 case 'Poção':
                     self.usar_pocao()
-                    return 0
-                case 'Mira Certeira':
-                    self.status = 'Mirando'
-                    return 0
+                    return {None:0}
+                case 'Apunhalada':
+                    dano_causado = self.apunhalada(value, stat_adv)
+                    for d in dano_causado.values():
+                        print(f"Dano causado : {d}")
+                    return dano_causado
                 case other:
-                    return self.envenenar(value)
+                    dano_causado = self.envenenar(value)
+                    for d in dano_causado.values():
+                        print(f"Dano causado : {d}")
+                    return dano_causado
 
 
 class Mago(Player):
@@ -205,12 +222,13 @@ class Mago(Player):
             'Trovão': 40}, {'Jato de Água': 20}, {'Poção': 50}]
         self.nome = input("Qual seu nome? ").title()
 
-    def ataque(self, escolha: int):
+    def ataque(self, escolha: int, stat_adv : str | None = None):
         if (escolha > len(self.habilidades_clase)):
             print("Escolha Indisponível")
-            return 0
+            return {None:0}
         habilidade_usada = self.habilidades_clase[escolha]
         for key, value in habilidade_usada.items():
+            print(f"Habilidade usada : {key}")
             match key:
                 case 'Poção':
                     self.usar_pocao()
