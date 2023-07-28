@@ -30,6 +30,12 @@ class Player:
                 print(f"Status: {azul}{self.status}{nada}")
             case 'Ira':
                 print(f"Status: {vermelho}{self.status}{nada}")
+            case 'Queimando':
+                 print(f"Status: {vermelho}{self.status}{nada}")
+            case 'Molhado':
+                 print(f"Status: {ciano}{self.status}{nada}")
+            case 'Congelado':
+                 print(f"Status: {azul}{self.status}{nada}")
     
     def atualizar_vida(self, dano : int):
         if self.status == 'Protegido':
@@ -65,9 +71,10 @@ class Player:
         self.vida += 100
         self.status = 'Normal'
         print("Vida Recuperada em 100")
+        return {None:0}
 
     def mostrar_ataque(self):
-        print("="*41)
+        print("="*40)
         print(f"Habilidades disponíveis para {self.nome}:")
         for a in range(0, len(self.habilidades_clase)):
             for k, v in self.habilidades_clase[a].items():
@@ -91,6 +98,7 @@ class Arqueiro(Player):
             self.status = 'Normal'
         if (chance_crit == 20):
             print(f"{vermelho}CRÍTICO{nada}")
+            print(f"Dano Causado: {dano*2}")
             return {None:dano*2}
         return {None:dano}
 
@@ -100,6 +108,7 @@ class Arqueiro(Player):
         if(chance_veneno == 20):
             new_status = 'Envenenado'
             print("Você conseguiu envenenar seu inimigo")
+        print(f"Dano Causado: {dano}")
         return {new_status:dano}
 
     def ataque(self, escolha: int, stat_adv : str | None = None):
@@ -111,21 +120,14 @@ class Arqueiro(Player):
             print(f"Habilidade usada : {key}")
             match key:
                 case 'Poção':
-                    self.usar_pocao()
-                    return {None:0}
+                    return self.usar_pocao()
                 case 'Mira Certeira':
                     self.status = 'Mirando'
                     return {None:0}
                 case 'Flecha Envenenada':
-                    dano_causado = self.envenenar(value)
-                    for d in dano_causado.values():
-                        print(f"Dano Causado: {d}")
-                    return dano_causado
+                    return self.envenenar(value)
                 case other:
-                    dano_causado = self.critico(value)
-                    for d in dano_causado.values():
-                        print(f"Dano Causado: {d}")
-                    return dano_causado
+                    return self.critico(value)
 
 
 class Paladino(Player):
@@ -141,7 +143,9 @@ class Paladino(Player):
             self.status = 'Normal'
         self.cont_1 += 1
         if self.status == 'Ira':
+            print(f"Dano Causado: {dano*2}")
             return {None:dano*2}
+        print(f"Dano Causado: {dano}")
         return {None:dano}
 
     def ataque(self, escolha: int, stat_adv : str | None = None):
@@ -153,8 +157,7 @@ class Paladino(Player):
             print(f"Habilidade usada : {key}")
             match key:
                 case 'Poção':
-                    self.usar_pocao()
-                    return {None:0}
+                    return self.usar_pocao()
                 case 'Ira':
                     self.status = 'Ira'
                     self.cont_1 = 0
@@ -164,10 +167,7 @@ class Paladino(Player):
                     self.cont_1 = 0
                     return {None:0}
                 case other:
-                    dano_causado = self.atacar(value)
-                    for d in dano_causado.values():
-                        print(f"Dano Causado: {d}")
-                    return dano_causado
+                    return self.atacar(value)
 
 
 class Assasino(Player):
@@ -183,12 +183,16 @@ class Assasino(Player):
         if(chance_veneno == 20):
             new_status = 'Envenenado'
             print("Você conseguiu envenenar seu inimigo")
+            print(f"Dano Causado: {dano*2}")
             return {new_status:dano * 2}
+        print(f"Dano Causado: {dano}")
         return {new_status:dano}
 
     def apunhalada(self, dano : int, stat_adv):
         if(stat_adv == 'Envenenado'):
+            print(f"Dano Causado: {dano*2}")
             return {None:dano*2}
+        print(f"Dano Causado: {dano}")
         return {None:dano}
 
 
@@ -201,18 +205,11 @@ class Assasino(Player):
             print(f"Habilidade Usada: {key}")
             match key:
                 case 'Poção':
-                    self.usar_pocao()
-                    return {None:0}
+                    return self.usar_pocao()
                 case 'Apunhalada':
-                    dano_causado = self.apunhalada(value, stat_adv)
-                    for d in dano_causado.values():
-                        print(f"Dano causado : {d}")
-                    return dano_causado
+                    return self.apunhalada(value, stat_adv)
                 case other:
-                    dano_causado = self.envenenar(value)
-                    for d in dano_causado.values():
-                        print(f"Dano causado : {d}")
-                    return dano_causado
+                    return self.envenenar(value)
 
 
 class Mago(Player):
@@ -221,6 +218,52 @@ class Mago(Player):
         self.habilidades_clase = [{'Bola de Fogo': 10}, {'Raio de Gelo': 30}, {
             'Trovão': 40}, {'Jato de Água': 20}, {'Poção': 50}]
         self.nome = input("Qual seu nome? ").title()
+
+    def fogo(self, dano : int, stat_adv : str):
+        chance_fogo = randint(20,20)
+        print(f"Dano Causado: {dano}")
+        if(chance_fogo == 20):
+            if(stat_adv == 'Molhado'):
+                print("Você evaporou a água do seu adversário")
+                return {'Normal':dano}
+            elif(stat_adv == 'Congelado'):
+                print("Você derretou o gelo que adversário estava")
+                return {"Molhado":dano}
+            else:
+                print("Você conseguiu queimar seu inimigo")
+                return {"Queimando":dano}
+        return {None:dano}
+            
+    def gelo(self, dano : int, stat_adv : str):
+        chance_congelador = randint(20, 20)
+        print(f"Dano Causado: {dano}")
+        if(chance_congelador == 20):
+            if(stat_adv == 'Queimando'):
+                print("Misturando seu gelo com o fogo já existente, você deixa o inimigo molhado")
+                return {'Molhado':dano}
+            else:
+                print("Você conseguiu congelar seu inimigo")
+                return {"Congelado":dano}
+        return {None:dano}
+
+    def raio(self, dano : int, stat_adv : str):
+        print("Você invoca o nome da Raio para te ajudar")
+        if(stat_adv == 'Molhado'):
+            print("O inimigo sofre um enorme descarga elétrica por estar molhado")
+            print(f"Dano Causado: {dano*2}")
+            return {'Normal':dano*2}
+        print(f"Dano Causado: {dano}")
+        return {None:dano}
+
+    def agua(self, dano : int, stat_adv : str):
+        print(f"Dano causado: {dano}")
+        if(stat_adv == 'Queimando'):
+            print("Você apaga o fogo do seu adversário")
+            return {"Normal":dano}
+        elif(stat_adv == 'Congelado'):
+            return {None:dano}
+        else:
+            return {"Molhado":dano}
 
     def ataque(self, escolha: int, stat_adv : str | None = None):
         if (escolha > len(self.habilidades_clase)):
@@ -232,13 +275,14 @@ class Mago(Player):
             match key:
                 case 'Poção':
                     self.usar_pocao()
-                    return 0
-                case 'Mira Certeira':
-                    self.status = 'Mirando'
-                    return 0
-                case other:
-                    return self.critico(value)
-
+                case 'Bola de Fogo':
+                    return self.fogo(value, stat_adv)
+                case 'Raio de Gelo':
+                    return self.gelo(value, stat_adv)
+                case 'Trovão':
+                    return self.raio(value, stat_adv)
+                case 'Jato de Água':
+                    return self.agua(value, stat_adv)
 
 def criando_jogador(jogador: int):
     esc = int(input(f'''[ 1 ] - Arqueiro
