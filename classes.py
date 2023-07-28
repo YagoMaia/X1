@@ -129,7 +129,6 @@ class Arqueiro(Player):
                 case other:
                     return self.critico(value)
 
-
 class Paladino(Player):
     def __init__(self):
         self.classe = "Paladino"
@@ -168,7 +167,6 @@ class Paladino(Player):
                     return {None:0}
                 case other:
                     return self.atacar(value)
-
 
 class Assasino(Player):
     def __init__(self):
@@ -210,7 +208,6 @@ class Assasino(Player):
                     return self.apunhalada(value, stat_adv)
                 case other:
                     return self.envenenar(value)
-
 
 class Mago(Player):
     def __init__(self):
@@ -305,3 +302,22 @@ Escolha a classe do jogador {jogador}: '''))
 def Players(p1 : Player, p2 : Player):
     p1.mostrar_atributos()
     p2.mostrar_atributos()
+
+def pvp(p1 : Player, p2 : Player):
+    while(p1.vida and p2.vida > 0):
+        #p1.mostrar_atributos()
+        #p2.mostrar_atributos()
+        Players(p1,p2)
+        p1.mostrar_ataque()
+        escolha_1 = int(input("Escolha o ataque: "))
+        ataque_1 = p1.ataque(escolha_1, p2.status)
+        p2.atualizar(ataque_1)
+        Players(p1,p2)
+        p2.mostrar_ataque()
+        escolha_2 = int(input("Escolha o ataque: "))
+        ataque_2 = p2.ataque(escolha_2, p1.status)
+        p1.atualizar(ataque_2)
+    if(p1.vida > p2.vida):
+        print(f"Jogador {p1.nome} é o vencedor")
+    else:
+        print(f"Jogador {p2.nome} é o vencedor")
