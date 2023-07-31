@@ -1,6 +1,8 @@
 from random import randint
 from colors import *
 from math import ceil
+from time import sleep
+
 
 
 #Classe Base
@@ -77,8 +79,8 @@ class Player:
         print("="*40)
         print(f"Habilidades disponíveis para {self.nome}:")
         for a in range(0, len(self.habilidades_clase)):
-            for k, v in self.habilidades_clase[a].items():
-                print(f"[ {a} ] - {k}")
+            for k in self.habilidades_clase[a].keys():
+                print(f"[ {a+1} ] - {k}")
 
 #Classes do PVP
 class Arqueiro(Player):
@@ -97,9 +99,15 @@ class Arqueiro(Player):
         if self.status == 'Mirando':
             self.status = 'Normal'
         if (chance_crit == 20):
+            sleep(1)
             print(f"{vermelho}CRÍTICO{nada}")
+            sleep(1)
             print(f"Dano Causado: {dano*2}")
+            sleep(1)
             return {None:dano*2}
+        sleep(1)
+        print(f"Dano Causado: {dano}")
+        sleep(1)
         return {None:dano}
 
     def envenenar(self, dano : int):
@@ -107,8 +115,11 @@ class Arqueiro(Player):
         new_status = None
         if(chance_veneno == 20):
             new_status = 'Envenenado'
+            sleep(1)
             print("Você conseguiu envenenar seu inimigo")
+        sleep(1)
         print(f"Dano Causado: {dano}")
+        sleep(1)
         return {new_status:dano}
 
     def ataque(self, escolha: int, stat_adv : str | None = None):
@@ -117,6 +128,7 @@ class Arqueiro(Player):
             return {None:0}
         habilidade_usada = self.habilidades_clase[escolha]
         for key, value in habilidade_usada.items():
+            sleep(1)
             print(f"Habilidade usada : {key}")
             match key:
                 case 'Poção':
@@ -142,9 +154,13 @@ class Paladino(Player):
             self.status = 'Normal'
         self.cont_1 += 1
         if self.status == 'Ira':
+            sleep(1)
             print(f"Dano Causado: {dano*2}")
+            sleep(1)
             return {None:dano*2}
+        sleep(1)
         print(f"Dano Causado: {dano}")
+        sleep(1)
         return {None:dano}
 
     def ataque(self, escolha: int, stat_adv : str | None = None):
@@ -153,6 +169,7 @@ class Paladino(Player):
             return {None:0}
         habilidade_usada = self.habilidades_clase[escolha]
         for key, value in habilidade_usada.items():
+            sleep(1)
             print(f"Habilidade usada : {key}")
             match key:
                 case 'Poção':
@@ -180,17 +197,26 @@ class Assasino(Player):
         new_status = None
         if(chance_veneno == 20):
             new_status = 'Envenenado'
+            sleep(1)
             print("Você conseguiu envenenar seu inimigo")
+            sleep(1)
             print(f"Dano Causado: {dano*2}")
+            sleep(1)
             return {new_status:dano * 2}
+        sleep(1)
         print(f"Dano Causado: {dano}")
+        sleep(1)
         return {new_status:dano}
 
     def apunhalada(self, dano : int, stat_adv):
         if(stat_adv == 'Envenenado'):
+            sleep(1)
             print(f"Dano Causado: {dano*2}")
+            sleep(1)
             return {None:dano*2}
+        sleep(1)
         print(f"Dano Causado: {dano}")
+        sleep(1)
         return {None:dano}
 
 
@@ -200,7 +226,9 @@ class Assasino(Player):
             return {None:0}
         habilidade_usada = self.habilidades_clase[escolha]
         for key, value in habilidade_usada.items():
+            sleep(1)
             print(f"Habilidade Usada: {key}")
+            sleep(1)
             match key:
                 case 'Poção':
                     return self.usar_pocao()
@@ -221,13 +249,19 @@ class Mago(Player):
         print(f"Dano Causado: {dano}")
         if(chance_fogo == 20):
             if(stat_adv == 'Molhado'):
+                sleep(1)
                 print("Você evaporou a água do seu adversário")
+                sleep(1)
                 return {'Normal':dano}
             elif(stat_adv == 'Congelado'):
+                sleep(1)
                 print("Você derretou o gelo que adversário estava")
+                sleep(1)
                 return {"Molhado":dano}
             else:
+                sleep(1)
                 print("Você conseguiu queimar seu inimigo")
+                sleep(1)
                 return {"Queimando":dano}
         return {None:dano}
             
@@ -236,26 +270,38 @@ class Mago(Player):
         print(f"Dano Causado: {dano}")
         if(chance_congelador == 20):
             if(stat_adv == 'Queimando'):
+                sleep(1)
                 print("Misturando seu gelo com o fogo já existente, você deixa o inimigo molhado")
+                sleep(1)
                 return {'Molhado':dano}
             else:
+                sleep(1)
                 print("Você conseguiu congelar seu inimigo")
+                sleep(1)
                 return {"Congelado":dano}
         return {None:dano}
 
     def raio(self, dano : int, stat_adv : str):
         print("Você invoca o nome da Raio para te ajudar")
         if(stat_adv == 'Molhado'):
+            sleep(1)
             print("O inimigo sofre um enorme descarga elétrica por estar molhado")
+            sleep(1)
             print(f"Dano Causado: {dano*2}")
+            sleep(1)
             return {'Normal':dano*2}
+        sleep(1)
         print(f"Dano Causado: {dano}")
+        sleep(1)
         return {None:dano}
 
     def agua(self, dano : int, stat_adv : str):
+        sleep(1)
         print(f"Dano causado: {dano}")
         if(stat_adv == 'Queimando'):
+            sleep(1)
             print("Você apaga o fogo do seu adversário")
+            sleep(1)
             return {"Normal":dano}
         elif(stat_adv == 'Congelado'):
             return {None:dano}
@@ -268,6 +314,7 @@ class Mago(Player):
             return {None:0}
         habilidade_usada = self.habilidades_clase[escolha]
         for key, value in habilidade_usada.items():
+            sleep(1)
             print(f"Habilidade usada : {key}")
             match key:
                 case 'Poção':
@@ -304,19 +351,35 @@ def Players(p1 : Player, p2 : Player):
     p2.mostrar_atributos()
 
 def pvp(p1 : Player, p2 : Player):
+    rod = 1
     while(p1.vida and p2.vida > 0):
+        print('-=' * 20)
+        print(f'{"Rodada":>20} {rod:<20}')
+        print('-=' * 20)
+        sleep(1)
         #p1.mostrar_atributos()
         #p2.mostrar_atributos()
         Players(p1,p2)
-        p1.mostrar_ataque()
-        escolha_1 = int(input("Escolha o ataque: "))
-        ataque_1 = p1.ataque(escolha_1, p2.status)
+        if(p1.status == 'Congelado'):
+            print(f"{p1.nome} está congelado, portanto, não conseguirá atacar")
+            ataque_1 = {None:0}
+            p1.status = 'Normal'
+        else:
+            p1.mostrar_ataque()
+            escolha_1 = int(input("Escolha o ataque: "))
+            ataque_1 = p1.ataque(escolha_1 - 1, p2.status)
         p2.atualizar(ataque_1)
         Players(p1,p2)
-        p2.mostrar_ataque()
-        escolha_2 = int(input("Escolha o ataque: "))
-        ataque_2 = p2.ataque(escolha_2, p1.status)
+        if(p2.status == 'Congelado'):
+            print(f"{p2.nome} está congelado, portanto, não conseguirá atacar")
+            ataque_2 = {None:0}
+            p2.status = 'Normal'
+        else:
+            p2.mostrar_ataque()
+            escolha_2 = int(input("Escolha o ataque: "))
+            ataque_2 = p2.ataque(escolha_2 - 1, p1.status)
         p1.atualizar(ataque_2)
+        rod+=1
     if(p1.vida > p2.vida):
         print(f"Jogador {p1.nome} é o vencedor")
     else:
