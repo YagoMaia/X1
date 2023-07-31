@@ -41,12 +41,36 @@ class Player:
     
     def atualizar_vida(self, dano : int):
         if self.status == 'Protegido':
-            self.vida -= ceil(dano/2)
+            dano_causado = ceil(dano/2)
+            self.vida -= dano_causado
+            print(f'Dano Causado: {dano_causado}')
+            sleep(1)
         elif self.status == 'Envenenado':
-            self.vida -= dano
-            self.vida -= ceil((1/100)*self.vida)
+            dano_causado = dano
+            self.vida -= dano_causado
+            dano_veneno = ceil((1/100)*self.vida)
+            self.vida -= dano_veneno
+            print(f'Dano Causado: {dano_causado}')
+            print(f'Dano do Veneno: {dano_veneno}')
+            sleep(1)
+        elif self.status == 'Queimando':
+            dano_causado = dano
+            self.vida -= dano_causado
+            dano_queimadura = ceil((1/100)*self.vida)
+            self.vida -= dano_queimadura
+            print(f'Dano Causado: {dano_causado}')
+            print(f'Dano da Queimadura: {dano_queimadura}')
+            sleep(1)
+        elif self.status == 'Ira':
+            dano_causado = dano * 2
+            self.vida -= dano_causado
+            print(f'Dano Causado: {dano_causado}')
+            sleep(1)
         else: 
-            self.vida -= dano
+            dano_causado = dano
+            self.vida -= dano_causado
+            print(f'Dano Causado: {dano_causado}')
+            sleep(1)
         return self.vida
 
     def atualizar_status(self, new_stat : str | None = None):
@@ -71,6 +95,8 @@ class Player:
 
     def usar_pocao(self):
         self.vida += 100
+        if(self.vida > 500):
+            self.vida = 500
         self.status = 'Normal'
         print("Vida Recuperada em 100")
         return {None:0}
@@ -102,23 +128,19 @@ class Arqueiro(Player):
             sleep(1)
             print(f"{vermelho}CRÍTICO{nada}")
             sleep(1)
-            print(f"Dano Causado: {dano*2}")
-            sleep(1)
             return {None:dano*2}
-        sleep(1)
-        print(f"Dano Causado: {dano}")
         sleep(1)
         return {None:dano}
 
     def envenenar(self, dano : int):
-        chance_veneno = randint(0,20)
+        chance_veneno = randint(20,20)
         new_status = None
+        if self.status == 'Mirando':
+            self.status = 'Normal'
         if(chance_veneno == 20):
             new_status = 'Envenenado'
             sleep(1)
             print("Você conseguiu envenenar seu inimigo")
-        sleep(1)
-        print(f"Dano Causado: {dano}")
         sleep(1)
         return {new_status:dano}
 
@@ -134,6 +156,9 @@ class Arqueiro(Player):
                 case 'Poção':
                     return self.usar_pocao()
                 case 'Mira Certeira':
+                    sleep(1)
+                    print("Você começa a mirar para tentar acertar em algum lugar que pode causa mais dano...")
+                    sleep(1)
                     self.status = 'Mirando'
                     return {None:0}
                 case 'Flecha Envenenada':
@@ -155,11 +180,7 @@ class Paladino(Player):
         self.cont_1 += 1
         if self.status == 'Ira':
             sleep(1)
-            print(f"Dano Causado: {dano*2}")
-            sleep(1)
             return {None:dano*2}
-        sleep(1)
-        print(f"Dano Causado: {dano}")
         sleep(1)
         return {None:dano}
 
@@ -177,10 +198,16 @@ class Paladino(Player):
                 case 'Ira':
                     self.status = 'Ira'
                     self.cont_1 = 0
+                    sleep(1)
+                    print("Você perde a paciência com no decorrer da batalha\nTudo o que importa agora é bater\nPor conta disso você tomará mais dano,\nVocê está com muita raiva")
+                    sleep(1)
                     return {None:0}
                 case 'Escudo Divino':
                     self.status = 'Protegido'
                     self.cont_1 = 0
+                    sleep(1)
+                    print("Você pega seu escudo que tá em suas costas e o usa de maneira mais inteligente que antes\nVocê está se protegendo")
+                    sleep(1)
                     return {None:0}
                 case other:
                     return self.atacar(value)
@@ -193,29 +220,21 @@ class Assasino(Player):
         self.nome = input("Qual seu nome? ").title()
 
     def envenenar(self, dano : int):
-        chance_veneno = randint(0,20)
+        chance_veneno = randint(20,20)
         new_status = None
         if(chance_veneno == 20):
             new_status = 'Envenenado'
             sleep(1)
             print("Você conseguiu envenenar seu inimigo")
             sleep(1)
-            print(f"Dano Causado: {dano*2}")
-            sleep(1)
             return {new_status:dano * 2}
-        sleep(1)
-        print(f"Dano Causado: {dano}")
         sleep(1)
         return {new_status:dano}
 
     def apunhalada(self, dano : int, stat_adv):
         if(stat_adv == 'Envenenado'):
             sleep(1)
-            print(f"Dano Causado: {dano*2}")
-            sleep(1)
             return {None:dano*2}
-        sleep(1)
-        print(f"Dano Causado: {dano}")
         sleep(1)
         return {None:dano}
 
@@ -267,7 +286,6 @@ class Mago(Player):
             
     def gelo(self, dano : int, stat_adv : str):
         chance_congelador = randint(20, 20)
-        print(f"Dano Causado: {dano}")
         if(chance_congelador == 20):
             if(stat_adv == 'Queimando'):
                 sleep(1)
@@ -287,17 +305,11 @@ class Mago(Player):
             sleep(1)
             print("O inimigo sofre um enorme descarga elétrica por estar molhado")
             sleep(1)
-            print(f"Dano Causado: {dano*2}")
-            sleep(1)
             return {'Normal':dano*2}
-        sleep(1)
-        print(f"Dano Causado: {dano}")
         sleep(1)
         return {None:dano}
 
     def agua(self, dano : int, stat_adv : str):
-        sleep(1)
-        print(f"Dano causado: {dano}")
         if(stat_adv == 'Queimando'):
             sleep(1)
             print("Você apaga o fogo do seu adversário")
